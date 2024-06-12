@@ -1,4 +1,4 @@
-version: 0.0.3
+version: 0.0.4
 jobId: "876"
 jobName: Weather Forecasting For City
 jobType: Aggregated Data Product
@@ -76,6 +76,6 @@ controlPort:
         checks:
           - column: city
             expression: <=
-            number: 0
+            number: 1
             owner: Miloni Shah
         referenceAlias: Write_
