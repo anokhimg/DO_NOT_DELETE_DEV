@@ -1,4 +1,4 @@
-version: 0.0.2
+version: 0.0.3
 jobId: "876"
 jobName: Weather Forecasting For City
 jobType: Aggregated Data Product
@@ -62,7 +62,7 @@ transformation:
     sequence: 2
     arguments:
       - urn:dv:dataproduct:bc18b584-358b-4595-897a-7aa293c7935f
-    pythonFilePath: s3://bp-spark-sql-library-test-acc/custom-jobs/CustomPythonJobWriteParquet.py
+    pythonFilePath: s3://bp-spark-sql-library-test-acc/custom-jobs/CustomPythonHi.py
     inputDataFrameList:
       - inputDataFrame: Weather_Data_-_2024__1
         tempViewName: weather_data
