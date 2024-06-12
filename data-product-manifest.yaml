@@ -1,0 +1,81 @@
+version: 0.0.1
+jobId: "876"
+jobName: Weather Forecasting For City
+jobType: Aggregated Data Product
+developerId: a421c8d2-ced6-4227-993e-04155a8feb50
+requestDataproductID: 7bb96c5f-ed19-473f-85ba-dc7dea6c4071
+domain: sale
+alias: Write_
+discoveryPort:
+  name: Weather Forecasting For City
+inputPorts:
+  - alias: Weather_Data_-_2024__1
+    isDynamic: true
+    dataProductUrn: urn:dv:dataproduct:bc18b584-358b-4595-897a-7aa293c7935f
+    filter: localtime > '2024-01-01 00:00:00'
+    projection: city,country,temp_c,temp_f,tz_id,localtime
+    optional:
+      persistDataFrame: false
+    type: dataproduct
+productState:
+  persistDataFrame: false
+  catalogType: glue
+  enforceSchema: false
+  stepName: "Write "
+  tableName: s3Source.weather_forcast_city
+  warehousePath: s3://bp-spark-sql-library-test-acc/
+  catalogName: glue
+  type: readDataIceberg
+  isStateManagement: true
+  sequence: 3
+  alias: Write_
+  refreshInterval: None
+  retentionVersions: ""
+  logicalSchema:
+    properties:
+      city:
+        type: STRING
+        description: City
+        sourceColumn: city
+        sourceTable: weather_data_2024
+      country:
+        type: STRING
+        description: Country
+        sourceColumn: country
+        sourceTable: weather_data_2024
+      temperature_in_celsius:
+        type: STRING
+        description: temperature in celsius
+        sourceColumn: temp_c
+        sourceTable: weather_data_2024
+      temperature_in_fahrenheit:
+        type: STRING
+        description: temperature in fahrenheit
+        sourceColumn: temp_f
+        sourceTable: weather_data_2024
+  enforceSchemaMethod: ""
+  isProfilingEnabled: true
+transformation:
+  - isDynamic: true
+    alias: EMR_PySpark_1
+    description: transformation for projections
+    sequence: 2
+    arguments:
+      - urn:dv:dataproduct:bc18b584-358b-4595-897a-7aa293c7935f
+    pythonFilePath: s3://bp-spark-sql-library-test-acc/custom-jobs/CustomPythonJobWriteRedshiftWithReg.py
+    inputDataFrameList:
+      - inputDataFrame: Weather_Data_-_2024__1
+        tempViewName: weather_data
+    optional:
+      pythonEnvTarGZPath: s3://byte-etl-externaldemo/pyspark_serverless_test/pyspark_venv.tar.gz
+    type: customPySparkEMRServerless
+controlPort:
+  dataQualityRules:
+    NullValueCheck:
+      productState:
+        checks:
+          - column: city
+            expression: <=
+            number: 0
+            owner: Miloni Shah
+        referenceAlias: Write_
