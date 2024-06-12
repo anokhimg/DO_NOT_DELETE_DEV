@@ -1,4 +1,4 @@
-version: 0.0.1
+version: 0.0.2
 jobId: "875"
 jobName: Customer Details
 jobType: Source Aligned Data Product
@@ -170,6 +170,6 @@ controlPort:
         checks:
           - column: Card_Id
             expression: <=
-            number: 0
+            number: 1
             owner: Miloni Shah
         referenceAlias: Write_to_iceberg_for_Customer
