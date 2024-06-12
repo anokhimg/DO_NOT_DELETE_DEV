@@ -1,0 +1,93 @@
+version: 0.0.1
+jobId: "880"
+jobName: Weather Forecasting For Cities with Extra Information
+jobType: Consumption Ready Data Product
+developerId: a421c8d2-ced6-4227-993e-04155a8feb50
+requestDataproductID: 8f4b6be9-2f9a-4494-89c7-c737aecfb8e7
+domain: sale
+alias: Write
+discoveryPort:
+  name: Weather Forecasting For Cities with Extra Information
+inputPorts:
+  - alias: Weather_Data_-_2024__1
+    isDynamic: true
+    dataProductUrn: urn:dv:dataproduct:bc18b584-358b-4595-897a-7aa293c7935f
+    filter: ""
+    projection: ""
+    optional:
+      persistDataFrame: false
+    type: dataproduct
+  - alias: Weather_Forecasting_For_City_1
+    isDynamic: true
+    dataProductUrn: urn:dv:dataproduct:68a5d66a-2091-4dbc-805f-4a08b5b80574
+    filter: ""
+    projection: ""
+    optional:
+      persistDataFrame: false
+    type: dataproduct
+productState:
+  persistDataFrame: false
+  catalogType: glue
+  enforceSchema: false
+  stepName: Write
+  tableName: s3Source.weather_forcast_city_extra
+  warehousePath: s3://bp-spark-sql-library-test-acc/
+  catalogName: glue
+  type: readDataIceberg
+  isStateManagement: true
+  sequence: 4
+  alias: Write
+  refreshInterval: None
+  retentionVersions: ""
+  logicalSchema:
+    properties:
+      city:
+        type: STRING
+        description: City
+        sourceColumn: city
+        sourceTable: weather_data_2024
+      country:
+        type: STRING
+        description: Country
+        sourceColumn: country
+        sourceTable: weather_data_2024
+      temperature_in_celsius:
+        type: STRING
+        description: temperature in celsius
+        sourceColumn: temp_c
+        sourceTable: weather_data_2024
+      temperature_in_fahrenheit:
+        type: STRING
+        description: temperature in fahrenheit
+        sourceColumn: temp_f
+        sourceTable: weather_data_2024
+  enforceSchemaMethod: ""
+  isProfilingEnabled: true
+transformation:
+  - isDynamic: true
+    alias: EMR_PySpark_1
+    description: transformation for projections
+    sequence: 3
+    arguments:
+      - urn:dv:dataproduct:bc18b584-358b-4595-897a-7aa293c7935f
+      - urn:dv:dataproduct:68a5d66a-2091-4dbc-805f-4a08b5b80574
+    pythonFilePath: s3://bp-spark-sql-library-test-acc/custom-jobs/CustomPythonHi.py
+    inputDataFrameList:
+      - inputDataFrame: Weather_Data_-_2024__1
+        tempViewName: weather_data
+      - inputDataFrame: Weather_Forecasting_For_City_1
+        tempViewName: weather_data+adp
+        position: 1
+    optional:
+      pythonEnvTarGZPath: s3://byte-etl-externaldemo/pyspark_serverless_test/pyspark_venv.tar.gz
+    type: customPySparkEMRServerless
+controlPort:
+  dataQualityRules:
+    NullValueCheck:
+      productState:
+        checks:
+          - column: city
+            expression: <=
+            number: 1
+            owner: Miloni Shah
+        referenceAlias: Write
